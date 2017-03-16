@@ -9,6 +9,7 @@ import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.CookieValue;
@@ -28,14 +29,15 @@ import com.chen.seckill.service.ISeckillService;
 
 
 /**
- *<p>����: SeckillController </p>
- *<p>������ </p>
+ *<p>����: SeckillController </p>
+ *<p>������ </p>
  *<p>company:</p>
- * @����  �¼���
- * @ʱ��  2017��3��15�� ����4:24:36
- *@�汾 
+ * @����  �¼���
+ * @ʱ��  2017��3��15�� ����4:24:36
+ *@�汾 
  */
 @Controller
+//@Component
 @RequestMapping("/seckill")
 public class SeckillController {
 	
@@ -44,9 +46,26 @@ public class SeckillController {
 	@Autowired
 	private ISeckillService seckillService;
 	
-	@RequestMapping(name="/list",method=RequestMethod.GET)
+	
+	@RequestMapping(value="/hello",method=RequestMethod.GET)
+	//@ResponseBody
+	public String hello(Model model){
+		logger.info("开始获取列表。。。。。。。。。。。。");
+//		List<Seckill> list = seckillService.getSeckillList();
+//		model.addAttribute("list", list);
+		return "hello";
+	}
+	
+	
+	
+	
+	
+	
+	
+	@RequestMapping(value="/list",method=RequestMethod.GET)
 	//@ResponseBody
 	public String list(Model model){
+		logger.info("开始获取列表。。。。。。。。。。。。");
 		List<Seckill> list = seckillService.getSeckillList();
 		model.addAttribute("list", list);
 		return "list";
@@ -55,6 +74,7 @@ public class SeckillController {
 	@RequestMapping(value="/{seckillId}/detail",method=RequestMethod.GET)
 	//@ResponseBody
 	public String detail(@PathVariable("seckillId") Long seckillId,Model model){
+		logger.info("开始查询秒杀状态。。。。。。。。。。。。");
 		if(seckillId==null){
 			return "redirect:/seckill/list";
 		}
@@ -67,7 +87,7 @@ public class SeckillController {
 	}
 	
 	
-	@RequestMapping(name="/{seckillId}/exposer",
+	@RequestMapping(value="/{seckillId}/exposer",
 			method=RequestMethod.POST,
 			produces={"application/json; charset=utf-8"})
 	@ResponseBody
@@ -94,7 +114,7 @@ public class SeckillController {
 		
 		SeckillResult<SeckillExecution> seckillResult;
 		if(phone==null){
-			return new SeckillResult<SeckillExecution>(false,"δע��");
+			return new SeckillResult<SeckillExecution>(false,"δע��");
 		}
 		try {
 			SeckillExecution seckillExecution = seckillService.executeSeckill(seckillId, phone, md5);

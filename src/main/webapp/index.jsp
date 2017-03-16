@@ -8,5 +8,7 @@
 </head>
 <body>
 	你好!
+	<a href="${pageContext.request.contextPath}/WEB-INF/jsp/hello.jsp">列表</a>
+	<jsp:forward  page="${pageContext.request.contextPath}/WEB-INF/jsp/list.jsp"></jsp:forward>
 </body>
 </html>

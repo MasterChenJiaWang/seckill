@@ -10,6 +10,7 @@ import javax.annotation.Resource;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.DigestUtils;
@@ -26,15 +27,17 @@ import com.chen.seckill.pojo.Seckill;
 import com.chen.seckill.pojo.SuccessKilled;
 import com.chen.seckill.service.ISeckillService;
 
+import cache.RedisDao;
+
 
 /**
- *<p>±êÌâ: SeckillServiceImpl </p>
- *<p>ÃèÊö£º ÒµÎñ½Ó¿Ú£ºÕ¾ÔÚ"Ê¹ÓÃÕß"½Ç¶ÈÉè¼Æ½Ó¿Ú
- * Èı¸ö·½Ãæ£º·½·¨¶¨ÒåÁ£¶È£¬²ÎÊı£¬·µ»ØÀàĞÍ£¨return ÀàĞÍ/Òì³££©</p>
+ *<p>ï¿½ï¿½ï¿½ï¿½: SeckillServiceImpl </p>
+ *<p>ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ Òµï¿½ï¿½Ó¿Ú£ï¿½Õ¾ï¿½ï¿½"Ê¹ï¿½ï¿½ï¿½ï¿½"ï¿½Ç¶ï¿½ï¿½ï¿½Æ½Ó¿ï¿½
+ * ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½æ£ºï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½È£ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Í£ï¿½return ï¿½ï¿½ï¿½ï¿½/ï¿½ì³£ï¿½ï¿½</p>
  *<p>company:</p>
- * @×÷Õß  ³Â¼ÓÍû
- * @Ê±¼ä  2017Äê3ÔÂ15ÈÕ ÉÏÎç11:15:24
- *@°æ±¾ 
+ * @ï¿½ï¿½ï¿½ï¿½  ï¿½Â¼ï¿½ï¿½ï¿½
+ * @Ê±ï¿½ï¿½  2017ï¿½ï¿½3ï¿½ï¿½15ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½11:15:24
+ *@ï¿½æ±¾ 
  */
 
 @Service
@@ -48,7 +51,10 @@ public class SeckillServiceImpl  implements ISeckillService{
 	@Resource
 	private ISuccessKilledDao successKilledDao;
 	
-	// md5ÑÎÖµ×Ö·û´®£¬ÓÃÓÚ»ìÏıMD5
+	 @Autowired
+	  private RedisDao redisDao;
+	
+	// md5ï¿½ï¿½Öµï¿½Ö·ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ú»ï¿½ï¿½ï¿½MD5
 	private final String slat = "skdfjksjdf7787%^%^%^FSKJFK*(&&%^%&^8DF8^%^^*7hFJDHFJ";
 	
 	private String getMD5(long seckillId){
@@ -58,8 +64,8 @@ public class SeckillServiceImpl  implements ISeckillService{
 		return md5;
 	}
 	/* 
-	 *²éÑ¯ËùÓĞÃëÉ±¼ÍÂ¼
-	 *2017Äê3ÔÂ15ÈÕÏÂÎç2:14:20
+	 *ï¿½ï¿½Ñ¯ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½É±ï¿½ï¿½Â¼
+	 *2017ï¿½ï¿½3ï¿½ï¿½15ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½2:14:20
 	 */
 	@Override
 	public List<Seckill> getSeckillList() {
@@ -69,8 +75,8 @@ public class SeckillServiceImpl  implements ISeckillService{
 	}
 
 	/* 
-	 *²éÑ¯µ¥¸öÃëÉ±¼ÍÂ¼
-	 *2017Äê3ÔÂ15ÈÕÏÂÎç2:14:20
+	 *ï¿½ï¿½Ñ¯ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½É±ï¿½ï¿½Â¼
+	 *2017ï¿½ï¿½3ï¿½ï¿½15ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½2:14:20
 	 */
 	@Override
 	public Seckill getById(long seckillId) {
@@ -78,16 +84,24 @@ public class SeckillServiceImpl  implements ISeckillService{
 	}
 
 	/* 
-	 *ÃëÉ±¿ªÆô : ÊÇÊä³öÊÇÃëÉ±½Ó¿ÚµØÖ·
-	 * ·ñÔòÊä³öÏµÍ³Ê±¼äºÍÃëÉ±Ê±¼ä
-	 *2017Äê3ÔÂ15ÈÕÏÂÎç2:14:20
+	 *ï¿½ï¿½É±ï¿½ï¿½ï¿½ï¿½ : ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½É±ï¿½Ó¿Úµï¿½Ö·
+	 * ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ÏµÍ³Ê±ï¿½ï¿½ï¿½ï¿½ï¿½É±Ê±ï¿½ï¿½
+	 *2017ï¿½ï¿½3ï¿½ï¿½15ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½2:14:20
 	 */
 	@Override
 	public Exposer exportSeckillUrl(long seckillId) {
 	
-		Seckill seckill = seckillDao.queryById(seckillId);
+		//å…ˆä»ç¼“å­˜ä¸­æŸ¥çœ‹æ˜¯å¦æœ‰è¯¥æ•°æ®
+		Seckill seckill = redisDao.getSeckill(seckillId);
 		if(seckill==null){
-			return new Exposer(false, seckillId);
+			//è¯´æ˜ç¼“å­˜ä¸­æ²¡æœ‰æ•°æ®,éœ€è¦ä»æ•°æ®åº“ä¸­è·å–
+			seckill= seckillDao.queryById(seckillId);
+			if(seckill==null){
+				return new Exposer(false, seckillId);
+			}else{
+				//æŠŠæ•°æ®å­˜å…¥ç¼“å­˜ï¼Œä»¥ä¾¿ä¸‹æ¬¡å¿«é€Ÿè·å–
+				redisDao.putSeckill(seckill);
+			}
 		}
 		Date startTime = seckill.getStartTime();
 		Date endTime = seckill.getEndTime();
@@ -102,12 +116,12 @@ public class SeckillServiceImpl  implements ISeckillService{
 	}
 
 	/* 
-	 *Ö´ĞĞÃëÉ±²Ù×÷
-	 *  Ê¹ÓÃ×¢½â¿ØÖÆÊÂÎñ·½·¨µÄÓÅµã£º 
-	 * 1.¿ª·¢ÍÅ¶Ó´ï³ÉÒ»ÖÂÔ¼¶¨£¬Ã÷È·±ê×¢ÊÂÎñ·½·¨µÄ±à³Ì·ç¸ñ
-	 * 2.±£Ö¤ÊÂÎñ·½·¨µÄÖ´ĞĞÊ±¼ä¾¡¿ÉÄÜ¶Ì£¬²»Òª´©²åÆäËûÍøÂç²Ù×÷£¬RPC/HTTPÇëÇó»òÕß°şÀëµ½ÊÂÎñ·½·¨Íâ²¿
-	 * 3.²»ÊÇËùÓĞµÄ·½·¨¶¼ĞèÒªÊÂÎñ£¬ÈçÖ»ÓĞÒ»ÌõĞŞ¸Ä²Ù×÷£¬Ö»¶Á²Ù×÷²»ĞèÒªÊÂÎñ¿ØÖÆ
-	 *2017Äê3ÔÂ15ÈÕÏÂÎç2:14:20
+	 *Ö´ï¿½ï¿½ï¿½ï¿½É±ï¿½ï¿½ï¿½ï¿½
+	 *  Ê¹ï¿½ï¿½×¢ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ñ·½·ï¿½ï¿½ï¿½ï¿½Åµã£º 
+	 * 1.ï¿½ï¿½ï¿½ï¿½ï¿½Å¶Ó´ï¿½ï¿½Ò»ï¿½ï¿½Ô¼ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½È·ï¿½ï¿½×¢ï¿½ï¿½ï¿½ñ·½·ï¿½ï¿½Ä±ï¿½Ì·ï¿½ï¿½
+	 * 2.ï¿½ï¿½Ö¤ï¿½ï¿½ï¿½ñ·½·ï¿½ï¿½ï¿½Ö´ï¿½ï¿½Ê±ï¿½ä¾¡ï¿½ï¿½ï¿½Ü¶Ì£ï¿½ï¿½ï¿½Òªï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½RPC/HTTPï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ß°ï¿½ï¿½ëµ½ï¿½ï¿½ï¿½ñ·½·ï¿½ï¿½â²¿
+	 * 3.ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ĞµÄ·ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Òªï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ö»ï¿½ï¿½Ò»ï¿½ï¿½ï¿½Ş¸Ä²ï¿½ï¿½ï¿½ï¿½ï¿½Ö»ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Òªï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+	 *2017ï¿½ï¿½3ï¿½ï¿½15ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½2:14:20
 	 */
 	@Override
 	@Transactional
@@ -115,40 +129,64 @@ public class SeckillServiceImpl  implements ISeckillService{
 			throws SeckillException, RepeatKillException, SeckillCloseException {
 	
 		if(md5==null || !md5.equals(getMD5(seckillId))){
-			throw new SeckillException("ÃëÉ±Ã»ÓĞ¿ªÆô");
+			throw new SeckillException("ï¿½ï¿½É±Ã»ï¿½Ğ¿ï¿½ï¿½ï¿½");
 		}
 		Date nowTime = new Date();
 		
 		try {
-			//  ¼ÇÂ¼¹ºÂòĞĞÎª
-			int reduceNumber = seckillDao.reduceNumber(userPhone, nowTime);
-			
-			if(reduceNumber<=0){
-				//Ã»ÓĞ¸úĞÂ¼ÍÂ¼ ÖØ¸´ÃëÉ±
-				throw new SeckillCloseException("ÃëÉ±ÒÑ¾­½áÊø");
-			}else{
-				// ¼õ¿â´æ£¬ÈÈµãÉÌÆ·¾ºÕù
-				int insertCount = successKilledDao.insertSuccessKilled(seckillId, userPhone);
+			int insertCount= successKilledDao.insertSuccessKilled(seckillId, userPhone);
+			if(insertCount<=0){
 				
-				if(insertCount<=0){
-					// Ã»ÓĞ¸üĞÂµ½¼ÇÂ¼ rollback
-					throw new RepeatKillException("ÃëÉ±³åÍ»");
-				}else{
-					//ÃëÉ±³É¹¦
-					SuccessKilled successKilled = successKilledDao.queryByIdWithSeckill(seckillId, userPhone);
-					return new SeckillExecution(seckillId, SeckillStateEnum.SUCCESS, successKilled);
-				}
+				throw new RepeatKillException("é‡å¤ç§’æ€");
+			}else{
+				 //å‡åº“å­˜,çƒ­ç‚¹å•†å“ç«äº‰
+                int updateCount=seckillDao.reduceNumber(seckillId,nowTime);
+                if (updateCount<=0)
+                {
+                    //æ²¡æœ‰æ›´æ–°åº“å­˜è®°å½•ï¼Œè¯´æ˜ç§’æ€ç»“æŸ rollback
+                    throw new SeckillCloseException("seckill is closed");
+                }else {
+                    //ç§’æ€æˆåŠŸ,å¾—åˆ°æˆåŠŸæ’å…¥çš„æ˜ç»†è®°å½•,å¹¶è¿”å›æˆåŠŸç§’æ€çš„ä¿¡æ¯ commit
+                    SuccessKilled successKilled=successKilledDao.queryByIdWithSeckill(seckillId,userPhone);
+                    return new SeckillExecution(seckillId, SeckillStateEnum.SUCCESS,successKilled);
+                }
 			}
-		} catch (Exception e) {
-			logger.error(e.getMessage(), e);
-			// ËùÓĞ±àÒëÆÚÒì³£×ª»»ÎªÔËĞĞÆÚÒì³£
-			throw new SeckillException("seckill inner error:" + e.getMessage());
-		}
+//			//  ï¿½ï¿½Â¼ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Îª
+//			int reduceNumber = seckillDao.reduceNumber(userPhone, nowTime);
+//			
+//			if(reduceNumber<=0){
+//				//Ã»ï¿½Ğ¸ï¿½ï¿½Â¼ï¿½Â¼ ï¿½Ø¸ï¿½ï¿½ï¿½É±
+//				throw new SeckillCloseException("ï¿½ï¿½É±ï¿½Ñ¾ï¿½ï¿½ï¿½ï¿½ï¿½");
+//			}else{
+//				// ï¿½ï¿½ï¿½ï¿½æ£¬ï¿½Èµï¿½ï¿½ï¿½Æ·ï¿½ï¿½ï¿½ï¿½
+//				int insertCount = successKilledDao.insertSuccessKilled(seckillId, userPhone);
+//				
+//				if(insertCount<=0){
+//					// Ã»ï¿½Ğ¸ï¿½ï¿½Âµï¿½ï¿½ï¿½Â¼ rollback
+//					throw new RepeatKillException("ï¿½ï¿½É±ï¿½ï¿½Í»");
+//				}else{
+//					//ï¿½ï¿½É±ï¿½É¹ï¿½
+//					SuccessKilled successKilled = successKilledDao.queryByIdWithSeckill(seckillId, userPhone);
+//					return new SeckillExecution(seckillId, SeckillStateEnum.SUCCESS, successKilled);
+//				}
+//			}
+		} catch (SeckillCloseException e1)
+        {
+            throw e1;
+        }catch (RepeatKillException e2)
+        {
+            throw e2;
+        }catch (Exception e)
+        {
+            logger.error(e.getMessage(),e);
+            //æ‰€ä»¥ç¼–è¯‘æœŸå¼‚å¸¸è½¬åŒ–ä¸ºè¿è¡ŒæœŸå¼‚å¸¸
+            throw new SeckillException("seckill inner error :"+e.getMessage());
+        }
 	}
 
 	/* 
-	 * Ö´ĞĞÃëÉ±²Ù×÷by´æ´¢¹ı³Ì
-	 *2017Äê3ÔÂ15ÈÕÏÂÎç2:14:20
+	 * Ö´ï¿½ï¿½ï¿½ï¿½É±ï¿½ï¿½ï¿½ï¿½byï¿½æ´¢ï¿½ï¿½ï¿½ï¿½
+	 *2017ï¿½ï¿½3ï¿½ï¿½15ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½2:14:20
 	 */
 	@Override
 	public SeckillExecution executeSeckillProcedure(long seckillId, long userPhone, String md5)
