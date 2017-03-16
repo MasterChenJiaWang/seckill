@@ -1,6 +1,6 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
 	pageEncoding="UTF-8"%>
-<!DOCTYPE html>
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html lang="zh-CN">
 <head>
 <%@include file="common/head.jsp"%>
@@ -12,6 +12,10 @@
 		<div class="panel panel-default text-center">
 			<div class="panel-heading">
 				<h1>${seckill.name}</h1>
+				<!--  
+				<h3>${seckill.seckillId}</h3>
+				<h3>${seckill.startTime.time}</h3>
+				<h3>${seckill.endTime.time}</h3>  -->
 			</div>
 			<div class="panel-body">
 				<h2 class="text-danger">
@@ -60,16 +64,21 @@
 	<!-- jQery countDonw倒计时插件  -->
 	<script src="//cdn.bootcss.com/jquery.countdown/2.1.0/jquery.countdown.min.js"></script>
 	<!-- 开始编写交互逻辑 -->
-	<script src="${basePath}resources/js/seckill.js"  type="text/javascript"></script>
+	<script src="${basePath}resources/script/seckill.js"  type="text/javascript"></script>
+	
+	
 	<script type="text/javascript">
-		$(function(){
-			//使用EL表达式传入参数
-			seckill.detail.init({
-				seckillId : ${seckill.seckillId},
-				startTime : ${seckill.startTime.time},//毫秒
-				endTime : ${seckill.endTime.time}
+	
+	$(function(){
+		seckill.detail.init({
+			seckillId : ${seckill.seckillId},
+			startTime : ${seckill.startTime.time},
+			endTime : ${seckill.endTime.time}
 			});
-		});
+	});
+	
+	
+
 	</script>
 </body>
 </html>

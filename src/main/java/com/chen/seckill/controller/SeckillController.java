@@ -37,7 +37,6 @@ import com.chen.seckill.service.ISeckillService;
  *@�汾 
  */
 @Controller
-//@Component
 @RequestMapping("/seckill")
 public class SeckillController {
 	
@@ -117,7 +116,8 @@ public class SeckillController {
 			return new SeckillResult<SeckillExecution>(false,"δע��");
 		}
 		try {
-			SeckillExecution seckillExecution = seckillService.executeSeckill(seckillId, phone, md5);
+			// 存储过程调用
+			SeckillExecution seckillExecution = seckillService.executeSeckillProcedure(seckillId, phone, md5);
 			
 			return new SeckillResult<SeckillExecution>(true, seckillExecution);
 		} catch (RepeatKillException e) {

@@ -4,10 +4,13 @@
 package com.chen.seckill.service.impl;
 
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.annotation.Resource;
 
+import org.apache.commons.collections.MapUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,6 +20,7 @@ import org.springframework.util.DigestUtils;
 
 import com.chen.seckill.dao.ISeckillDao;
 import com.chen.seckill.dao.ISuccessKilledDao;
+import com.chen.seckill.dao.cache.RedisDao;
 import com.chen.seckill.dto.Exposer;
 import com.chen.seckill.dto.SeckillExecution;
 import com.chen.seckill.enums.SeckillStateEnum;
@@ -27,7 +31,6 @@ import com.chen.seckill.pojo.Seckill;
 import com.chen.seckill.pojo.SuccessKilled;
 import com.chen.seckill.service.ISeckillService;
 
-import cache.RedisDao;
 
 
 /**
@@ -41,14 +44,13 @@ import cache.RedisDao;
  */
 
 @Service
-
 public class SeckillServiceImpl  implements ISeckillService{
 
 	private Logger logger = LoggerFactory.getLogger(this.getClass());
-	@Resource
+	@Autowired
 	private ISeckillDao seckillDao;
 	
-	@Resource
+	@Autowired
 	private ISuccessKilledDao successKilledDao;
 	
 	 @Autowired
@@ -128,7 +130,7 @@ public class SeckillServiceImpl  implements ISeckillService{
 	public SeckillExecution executeSeckill(long seckillId, long userPhone, String md5)
 			throws SeckillException, RepeatKillException, SeckillCloseException {
 	
-		if(md5==null || !md5.equals(getMD5(seckillId))){
+		if (md5 == null || !md5.equals(getMD5(seckillId))){
 			throw new SeckillException("��ɱû�п���");
 		}
 		Date nowTime = new Date();
@@ -189,10 +191,35 @@ public class SeckillServiceImpl  implements ISeckillService{
 	 *2017��3��15������2:14:20
 	 */
 	@Override
-	public SeckillExecution executeSeckillProcedure(long seckillId, long userPhone, String md5)
-			throws SeckillException, RepeatKillException, SeckillCloseException {
-		// TODO Auto-generated method stub
-		return null;
+	public SeckillExecution executeSeckillProcedure(long seckillId, long userPhone, String md5){
+
+		if (md5 == null || !md5.equals(getMD5(seckillId))){
+            throw new SeckillException(SeckillStateEnum.DATA_REWRITE.getStateInfo());
+        }
+
+        Date killTime = new Date();
+        Map<String, Object> map = new HashMap<String, Object>();
+        map.put("seckillId", seckillId);
+        map.put("phone", userPhone);
+        map.put("killTime", killTime);
+        map.put("result", null);
+        //执行存储过程 result被赋值
+        try {
+            seckillDao.killByProcedure(map);
+            //获取result
+            int result = MapUtils.getInteger(map, "result", -2);
+            if (result == 1) {
+                SuccessKilled sk = successKilledDao.queryByIdWithSeckill(seckillId, userPhone);
+                return new SeckillExecution(seckillId, SeckillStateEnum.SUCCESS, sk);
+            } else {
+                return new SeckillExecution(seckillId, SeckillStateEnum.stateOf(result));
+            }
+
+        } catch (Exception e) {
+            logger.error(e.getMessage());
+            return new SeckillExecution(seckillId, SeckillStateEnum.INNER_ERROR);
+        }
+		
 	}
 
 

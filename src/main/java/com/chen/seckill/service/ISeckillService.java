@@ -13,51 +13,50 @@ import com.chen.seckill.exception.SeckillException;
 import com.chen.seckill.pojo.Seckill;
 
 /**
- *<p>▒ъ╠т: ISeckillService </p>
- *<p>├ш╩Ўг║ </p>
+ *<p>я┐╜я┐╜я┐╜я┐╜: ISeckillService </p>
+ *<p>я┐╜я┐╜я┐╜я┐╜я┐╜я┐╜ </p>
  *<p>company:</p>
- * @╫ў╒▀  │┬╝╙═√
- * @╩▒╝ф  2017─ъ3╘┬15╚╒ ╔╧╬ч11:14:02
- *@░ц▒╛ 
+ * @я┐╜я┐╜я┐╜я┐╜  я┐╜┬╝я┐╜я┐╜я┐╜
+ * @╩▒я┐╜я┐╜  2017я┐╜я┐╜3я┐╜я┐╜15я┐╜я┐╜ я┐╜я┐╜я┐╜я┐╜11:14:02
+ *@я┐╜ц▒╛ 
  */
 public interface ISeckillService {
 
 	/**
-	 * ▓щ╤п╦∙╙╨├ы╔▒╝═┬╝
+	 * я┐╜я┐╜╤пя┐╜я┐╜я┐╜я┐╜я┐╜я┐╜╔▒я┐╜я┐╜┬╝
 	 * 
-	 *@╩▒╝ф 2017─ъ3╘┬15╚╒ ╧┬╬ч1:55:16
+	 *@╩▒я┐╜я┐╜ 2017я┐╜я┐╜3я┐╜я┐╜15я┐╜я┐╜ я┐╜я┐╜я┐╜я┐╜1:55:16
 	 */
 	List<Seckill> getSeckillList();
 	
 	/**
-	 * ▓щ╤п╡е╕Ў├ы╔▒╝═┬╝
+	 * я┐╜я┐╜╤пя┐╜я┐╜я┐╜я┐╜я┐╜я┐╜╔▒я┐╜я┐╜┬╝
 	 * 
-	 *@╩▒╝ф 2017─ъ3╘┬15╚╒ ╧┬╬ч1:55:37
+	 *@╩▒я┐╜я┐╜ 2017я┐╜я┐╜3я┐╜я┐╜15я┐╜я┐╜ я┐╜я┐╜я┐╜я┐╜1:55:37
 	 */
 	Seckill getById(long seckillId);
 	
 	
 	/**
-	 * ├ы╔▒┐к╞Ї╩╟╩ф│Ў╩╟├ы╔▒╜╙┐┌╡╪╓╖
-	 * ╖ё╘Є╩ф│Ў╧╡═│╩▒╝ф║═├ы╔▒╩▒╝ф
+	 * я┐╜я┐╜╔▒я┐╜я┐╜я┐╜я┐╜я┐╜я┐╜я┐╜я┐╜я┐╜я┐╜я┐╜я┐╜я┐╜╔▒я┐╜╙┐┌╡я┐╜╓╖
+	 * я┐╜я┐╜я┐╜я┐╜я┐╜я┐╜я┐╜╧╡═│╩▒я┐╜я┐╜я┐╜я┐╜я┐╜╔▒╩▒я┐╜я┐╜
 	 * 
-	 *@╩▒╝ф 2017─ъ3╘┬15╚╒ ╧┬╬ч1:56:25
+	 *@╩▒я┐╜я┐╜ 2017я┐╜я┐╜3я┐╜я┐╜15я┐╜я┐╜ я┐╜я┐╜я┐╜я┐╜1:56:25
 	 */
 	Exposer exportSeckillUrl(long seckillId);
 	
 	/**
-	 * ╓┤╨╨├ы╔▒▓┘╫ў
-	 *@╩▒╝ф 2017─ъ3╘┬15╚╒ ╧┬╬ч2:06:43
+	 * ╓┤я┐╜я┐╜я┐╜я┐╜╔▒я┐╜я┐╜я┐╜я┐╜
+	 *@╩▒я┐╜я┐╜ 2017я┐╜я┐╜3я┐╜я┐╜15я┐╜я┐╜ я┐╜я┐╜я┐╜я┐╜2:06:43
 	 */
 	SeckillExecution executeSeckill(long seckillId, long userPhone, String md5)
 			throws SeckillException, RepeatKillException, SeckillCloseException;
 	
 	
 	/**
-	 * ╓┤╨╨├ы╔▒▓┘╫ўby┤ц┤в╣¤│╠
+	 * ╓┤я┐╜я┐╜я┐╜я┐╜╔▒я┐╜я┐╜я┐╜я┐╜byя┐╜ц┤вя┐╜я┐╜я┐╜я┐╜
 	 * 
-	 *@╩▒╝ф 2017─ъ3╘┬15╚╒ ╧┬╬ч2:06:56
+	 *@╩▒я┐╜я┐╜ 2017я┐╜я┐╜3я┐╜я┐╜15я┐╜я┐╜ я┐╜я┐╜я┐╜я┐╜2:06:56
 	 */
-	SeckillExecution executeSeckillProcedure(long seckillId, long userPhone, String md5)
-			throws SeckillException, RepeatKillException, SeckillCloseException;
+	SeckillExecution executeSeckillProcedure(long seckillId, long userPhone, String md5);
  }
