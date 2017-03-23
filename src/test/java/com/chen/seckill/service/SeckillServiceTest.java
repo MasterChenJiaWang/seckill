@@ -22,12 +22,12 @@ import com.chen.seckill.exception.SeckillCloseException;
 import com.chen.seckill.pojo.Seckill;
 
 /**
- *<p>±êÌâ: SeckillServiceTest </p>
- *<p>ÃèÊö£º </p>
+ *<p>ï¿½ï¿½ï¿½ï¿½: SeckillServiceTest </p>
+ *<p>ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ </p>
  *<p>company:</p>
- * @×÷Õß  ³Â¼ÓÍû
- * @Ê±¼ä  2017Äê3ÔÂ15ÈÕ ÏÂÎç3:29:02
- *@°æ±¾ 
+ * @ï¿½ï¿½ï¿½ï¿½  ï¿½Â¼ï¿½ï¿½ï¿½
+ * @Ê±ï¿½ï¿½  2017ï¿½ï¿½3ï¿½ï¿½15ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½3:29:02
+ *@ï¿½æ±¾ 
  */
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration({"classpath:spring/spring-dao.xml",
@@ -51,8 +51,9 @@ public class SeckillServiceTest {
 		Seckill seckill = seckillService.getById(id);
 		logger.info("seckill={}", seckill);
 	}
-
-	// ²âÊÔ´úÂëÍêÕûÂß¼­£¬×¢Òâ¿ÉÖØ¸´Ö´ÐÐ
+  
+	
+	// ï¿½ï¿½ï¿½Ô´ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ß¼ï¿½ï¿½ï¿½×¢ï¿½ï¿½ï¿½ï¿½Ø¸ï¿½Ö´ï¿½ï¿½
 	@Test
 	public void testSeckillLogic() throws Exception {
 		long id = 1001;
@@ -70,7 +71,7 @@ public class SeckillServiceTest {
 				logger.error(e.getMessage());
 			}
 		} else {
-			// ÃëÉ±Î´¿ªÆô
+			// ï¿½ï¿½É±Î´ï¿½ï¿½ï¿½ï¿½
 			logger.error("exposer={}", exposer);
 		}
 	}

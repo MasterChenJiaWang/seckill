@@ -8,5 +8,6 @@
 </head>
 <body>
 哈哈哈哈哈哈哈哈哈哈！！！！！！！！！！！！！！！！！！！！！！！！！
+<a class="btn btn-info" href="${basePath}seckill/list" target="_blank">list</a>
 </body>
 </html>

@@ -4,143 +4,108 @@
 package com.chen.seckill.dto;
 
 /**
- *<p>±êÌâ: Exposer </p>
- *<p>ÃèÊö£º±©Â¶ÃëÉ±½Ó¿ÚDTO </p>
+ *<p>ï¿½ï¿½ï¿½ï¿½: Exposer </p>
+ *<p>ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Â¶ï¿½ï¿½É±ï¿½Ó¿ï¿½DTO </p>
  *<p>company:</p>
- * @×÷Õß  ³Â¼ÓÍû
- * @Ê±¼ä  2017Äê3ÔÂ15ÈÕ ÏÂÎç1:58:23
- *@°æ±¾ 
+ * @ï¿½ï¿½ï¿½ï¿½  ï¿½Â¼ï¿½ï¿½ï¿½
+ * @Ê±ï¿½ï¿½  2017ï¿½ï¿½3ï¿½ï¿½15ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½1:58:23
+ *@ï¿½æ±¾ 
  */
 public class Exposer {
 
-	private boolean exposed;//ÊÇ·ñ¿ªÆôÃëÉ±
-	private String md5;// Ò»ÖÖ¼ÓÃÜ´ëÊ©
-	private long seckillId;
-	//ÏµÍ³µ±Ç°Ê±¼ä
-	private long now;
-	private long start;
-	private long end;
-	
-	/**
-	 * ÊÇ·ñ¿ªÆômd5
-	 * @param exposed
-	 * @param md5
-	 * @param seckillId
-	 */
-	public Exposer(boolean exposed, String md5, long seckillId) {
-		this.exposed = exposed;
-		this.md5 = md5;
-		this.seckillId = seckillId;
-	}
+	//æ˜¯å¦å¼€å¯ç§’æ€
+    private boolean exposed;
 
-	/**
-	 * 
-	 * @param exposed
-	 * @param seckillId
-	 * @param now
-	 * @param start
-	 * @param end
-	 */
-	public Exposer(boolean exposed, long seckillId, long now, long start, long end) {
-		this.exposed = exposed;
-		this.seckillId = seckillId;
-		this.now = now;
-		this.start = start;
-		this.end = end;
-	}
+    //åŠ å¯†æªæ–½
+    private String md5;
 
-	/**
-	 * ÊÇ·ñ¿ªÆôid
-	 * @param exposed
-	 * @param seckillId
-	 */
-	public Exposer(boolean exposed, long seckillId) {
-		this.exposed = exposed;
-		this.seckillId = seckillId;
-	}
+    private long seckillId;
 
-	/**
-	 * @return the exposed
-	 */
-	public boolean isExposed() {
-		return exposed;
-	}
+    //ç³»ç»Ÿå½“å‰æ—¶é—´(æ¯«ç§’)
+    private long now;
 
-	/**
-	 * @param exposed the exposed to set
-	 */
-	public void setExposed(boolean exposed) {
-		this.exposed = exposed;
-	}
+    //ç§’æ€çš„å¼€å¯æ—¶é—´
+    private long start;
 
-	/**
-	 * @return the md5
-	 */
-	public String getMd5() {
-		return md5;
-	}
+    //ç§’æ€çš„ç»“æŸæ—¶é—´
+    private long end;
 
-	/**
-	 * @param md5 the md5 to set
-	 */
-	public void setMd5(String md5) {
-		this.md5 = md5;
-	}
+    public Exposer(boolean exposed, String md5, long seckillId) {
+        this.exposed = exposed;
+        this.md5 = md5;
+        this.seckillId = seckillId;
+    }
 
-	/**
-	 * @return the seckillId
-	 */
-	public long getSeckillId() {
-		return seckillId;
-	}
+    public Exposer(boolean exposed, long seckillId,long now, long start, long end) {
+        this.exposed = exposed;
+        this.seckillId=seckillId;
+        this.now = now;
+        this.start = start;
+        this.end = end;
+    }
 
-	/**
-	 * @param seckillId the seckillId to set
-	 */
-	public void setSeckillId(long seckillId) {
-		this.seckillId = seckillId;
-	}
+    public Exposer(boolean exposed, long seckillId) {
+        this.exposed = exposed;
+        this.seckillId = seckillId;
+    }
 
-	/**
-	 * @return the now
-	 */
-	public long getNow() {
-		return now;
-	}
+    public boolean isExposed() {
+        return exposed;
+    }
 
-	/**
-	 * @param now the now to set
-	 */
-	public void setNow(long now) {
-		this.now = now;
-	}
+    public void setExposed(boolean exposed) {
+        this.exposed = exposed;
+    }
 
-	/**
-	 * @return the start
-	 */
-	public long getStart() {
-		return start;
-	}
+    public String getMd5() {
+        return md5;
+    }
 
-	/**
-	 * @param start the start to set
-	 */
-	public void setStart(long start) {
-		this.start = start;
-	}
+    public void setMd5(String md5) {
+        this.md5 = md5;
+    }
 
-	/**
-	 * @return the end
-	 */
-	public long getEnd() {
-		return end;
-	}
+    public long getSeckillId() {
+        return seckillId;
+    }
 
-	/**
-	 * @param end the end to set
-	 */
-	public void setEnd(long end) {
-		this.end = end;
-	}
-	
+    public void setSeckillId(long seckillId) {
+        this.seckillId = seckillId;
+    }
+
+    public long getNow() {
+        return now;
+    }
+
+    public void setNow(long now) {
+        this.now = now;
+    }
+
+    public long getStart() {
+        return start;
+    }
+
+    public void setStart(long start) {
+        this.start = start;
+    }
+
+    public long getEnd() {
+        return end;
+    }
+
+    public void setEnd(long end) {
+        this.end = end;
+    }
+
+    @Override
+    public String toString() {
+        return "Exposer{" +
+                "exposed=" + exposed +
+                ", md5='" + md5 + '\'' +
+                ", seckillId=" + seckillId +
+                ", now=" + now +
+                ", start=" + start +
+                ", end=" + end +
+                '}';
+    }
 }

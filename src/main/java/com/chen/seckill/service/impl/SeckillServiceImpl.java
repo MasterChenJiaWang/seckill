@@ -8,7 +8,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import javax.annotation.Resource;
 
 import org.apache.commons.collections.MapUtils;
 import org.slf4j.Logger;
@@ -31,117 +30,97 @@ import com.chen.seckill.pojo.Seckill;
 import com.chen.seckill.pojo.SuccessKilled;
 import com.chen.seckill.service.ISeckillService;
 
-
-
-/**
- *<p>����: SeckillServiceImpl </p>
- *<p>������ ҵ��ӿڣ�վ��"ʹ����"�Ƕ���ƽӿ�
- * �������棺�����������ȣ��������������ͣ�return ����/�쳣��</p>
- *<p>company:</p>
- * @����  �¼���
- * @ʱ��  2017��3��15�� ����11:15:24
- *@�汾 
- */
-
 @Service
-public class SeckillServiceImpl  implements ISeckillService{
+public class SeckillServiceImpl implements ISeckillService{
+    //日志对象
+    private Logger logger= LoggerFactory.getLogger(this.getClass());
 
-	private Logger logger = LoggerFactory.getLogger(this.getClass());
-	@Autowired
-	private ISeckillDao seckillDao;
-	
-	@Autowired
-	private ISuccessKilledDao successKilledDao;
-	
-	 @Autowired
-	  private RedisDao redisDao;
-	
-	// md5��ֵ�ַ��������ڻ���MD5
-	private final String slat = "skdfjksjdf7787%^%^%^FSKJFK*(&&%^%&^8DF8^%^^*7hFJDHFJ";
-	
-	private String getMD5(long seckillId){
-		
-		String base=seckillId+"/"+slat;
-		String md5=DigestUtils.md5DigestAsHex(base.getBytes());
-		return md5;
-	}
-	/* 
-	 *��ѯ������ɱ��¼
-	 *2017��3��15������2:14:20
-	 */
-	@Override
-	public List<Seckill> getSeckillList() {
-	
-		return seckillDao.queryAll(0,4);
-		
-	}
+    //加入一个混淆字符串(秒杀接口)的salt，为了我避免用户猜出我们的md5值，值任意给，越复杂越好
+    private final String salt="shsdssljdd'l.dsafqwafqW";
 
-	/* 
-	 *��ѯ������ɱ��¼
-	 *2017��3��15������2:14:20
-	 */
-	@Override
-	public Seckill getById(long seckillId) {
-		return seckillDao.queryById(seckillId);
-	}
+    //注入Service依赖
+    @Autowired //@Resource
+    private ISeckillDao seckillDao;
 
-	/* 
-	 *��ɱ���� : ���������ɱ�ӿڵ�ַ
-	 * �������ϵͳʱ�����ɱʱ��
-	 *2017��3��15������2:14:20
-	 */
-	@Override
-	public Exposer exportSeckillUrl(long seckillId) {
-	
-		//先从缓存中查看是否有该数据
-		Seckill seckill = redisDao.getSeckill(seckillId);
-		if(seckill==null){
-			//说明缓存中没有数据,需要从数据库中获取
-			seckill= seckillDao.queryById(seckillId);
-			if(seckill==null){
-				return new Exposer(false, seckillId);
-			}else{
-				//把数据存入缓存，以便下次快速获取
-				redisDao.putSeckill(seckill);
-			}
-		}
-		Date startTime = seckill.getStartTime();
-		Date endTime = seckill.getEndTime();
-		Date nowTime = new Date();
-		
-		if(nowTime.getTime()<startTime.getTime() || nowTime.getTime()>endTime.getTime()){
-			
-			return new Exposer(false, seckillId, nowTime.getTime(), startTime.getTime(), endTime.getTime());
-		}
-		String md5=null;
-		return new Exposer(true, md5, seckillId);
-	}
+    @Autowired //@Resource
+    private ISuccessKilledDao successKilledDao;
 
-	/* 
-	 *ִ����ɱ����
-	 *  ʹ��ע��������񷽷����ŵ㣺 
-	 * 1.�����ŶӴ��һ��Լ������ȷ��ע���񷽷��ı�̷��
-	 * 2.��֤���񷽷���ִ��ʱ�価���̣ܶ���Ҫ�����������������RPC/HTTP������߰��뵽���񷽷��ⲿ
-	 * 3.�������еķ�������Ҫ������ֻ��һ���޸Ĳ�����ֻ����������Ҫ�������
-	 *2017��3��15������2:14:20
-	 */
-	@Override
-	@Transactional
-	public SeckillExecution executeSeckill(long seckillId, long userPhone, String md5)
-			throws SeckillException, RepeatKillException, SeckillCloseException {
-	
-		if (md5 == null || !md5.equals(getMD5(seckillId))){
-			throw new SeckillException("��ɱû�п���");
-		}
-		Date nowTime = new Date();
-		
-		try {
-			int insertCount= successKilledDao.insertSuccessKilled(seckillId, userPhone);
-			if(insertCount<=0){
-				
-				throw new RepeatKillException("重复秒杀");
-			}else{
-				 //减库存,热点商品竞争
+    @Autowired
+    private RedisDao redisDao;
+
+    public List<Seckill> getSeckillList() {
+        return seckillDao.queryAll(0,4);
+    }
+
+    public Seckill getById(long seckillId) {
+        return seckillDao.queryById(seckillId);
+    }
+
+    public Exposer exportSeckillUrl(long seckillId) {
+        //优化点:缓存优化:超时的基础上维护一致性
+    	//先从缓存中查看是否有该数据
+        Seckill seckill = redisDao.getSeckill(seckillId);
+        if (seckill == null) {
+            //2.访问数据库
+            seckill = seckillDao.queryById(seckillId);
+            if (seckill == null) {//说明查不到这个秒杀产品的记录
+                return new Exposer(false, seckillId);
+            }else {
+                //3,放入redis
+                redisDao.putSeckill(seckill);
+            }
+
+        }
+        //若是秒杀未开启
+        Date startTime=seckill.getStartTime();
+        Date endTime=seckill.getEndTime();
+        //系统当前时间
+        Date nowTime=new Date();
+        if (startTime.getTime()>nowTime.getTime() || endTime.getTime()<nowTime.getTime())
+        {
+            return new Exposer(false,seckillId,nowTime.getTime(),startTime.getTime(),endTime.getTime());
+        }
+        //秒杀开启，返回秒杀商品的id、用给接口加密的md5
+        String md5=getMD5(seckillId);
+        return new Exposer(true,md5,seckillId);
+    }
+
+    private String getMD5(long seckillId)
+    {
+        String base=seckillId+"/"+salt;
+        String md5= DigestUtils.md5DigestAsHex(base.getBytes());
+        return md5;
+    }
+
+    //秒杀是否成功，成功:减库存，增加明细；失败:抛出异常，事务回滚
+    @Transactional
+    /**
+     * 使用注解控制事务方法的优点:
+     * 1.开发团队达成一致约定，明确标注事务方法的编程风格
+     * 2.保证事务方法的执行时间尽可能短，不要穿插其他网络操作RPC/HTTP请求或者剥离到事务方法外部
+     * 3.不是所有的方法都需要事务，如只有一条修改操作、只读操作不要事务控制
+     */
+    public SeckillExecution executeSeckill(long seckillId, long userPhone, String md5)
+            throws SeckillException, RepeatKillException, SeckillCloseException {
+
+        if (md5==null||!md5.equals(getMD5(seckillId)))
+        {
+            throw new SeckillException("seckill data rewrite");//秒杀数据被重写了
+        }
+        //执行秒杀逻辑:减库存+增加购买明细
+        Date nowTime=new Date();
+
+        try{
+
+            //否则更新了库存，秒杀成功,增加明细
+            int insertCount=successKilledDao.insertSuccessKilled(seckillId,userPhone);
+            //看是否该明细被重复插入，即用户是否重复秒杀
+            if (insertCount<=0)
+            {
+                throw new RepeatKillException("seckill repeated");
+            }else {
+
+                //减库存,热点商品竞争
                 int updateCount=seckillDao.reduceNumber(seckillId,nowTime);
                 if (updateCount<=0)
                 {
@@ -152,27 +131,11 @@ public class SeckillServiceImpl  implements ISeckillService{
                     SuccessKilled successKilled=successKilledDao.queryByIdWithSeckill(seckillId,userPhone);
                     return new SeckillExecution(seckillId, SeckillStateEnum.SUCCESS,successKilled);
                 }
-			}
-//			//  ��¼������Ϊ
-//			int reduceNumber = seckillDao.reduceNumber(userPhone, nowTime);
-//			
-//			if(reduceNumber<=0){
-//				//û�и��¼�¼ �ظ���ɱ
-//				throw new SeckillCloseException("��ɱ�Ѿ�����");
-//			}else{
-//				// ����棬�ȵ���Ʒ����
-//				int insertCount = successKilledDao.insertSuccessKilled(seckillId, userPhone);
-//				
-//				if(insertCount<=0){
-//					// û�и��µ���¼ rollback
-//					throw new RepeatKillException("��ɱ��ͻ");
-//				}else{
-//					//��ɱ�ɹ�
-//					SuccessKilled successKilled = successKilledDao.queryByIdWithSeckill(seckillId, userPhone);
-//					return new SeckillExecution(seckillId, SeckillStateEnum.SUCCESS, successKilled);
-//				}
-//			}
-		} catch (SeckillCloseException e1)
+
+            }
+
+
+        }catch (SeckillCloseException e1)
         {
             throw e1;
         }catch (RepeatKillException e2)
@@ -184,15 +147,13 @@ public class SeckillServiceImpl  implements ISeckillService{
             //所以编译期异常转化为运行期异常
             throw new SeckillException("seckill inner error :"+e.getMessage());
         }
-	}
+
+    }
 
 	/* 
-	 * ִ����ɱ����by�洢����
-	 *2017��3��15������2:14:20
 	 */
 	@Override
-	public SeckillExecution executeSeckillProcedure(long seckillId, long userPhone, String md5){
-
+	public SeckillExecution executeSeckillProcedure(long seckillId, long userPhone, String md5) {
 		if (md5 == null || !md5.equals(getMD5(seckillId))){
             throw new SeckillException(SeckillStateEnum.DATA_REWRITE.getStateInfo());
         }
@@ -219,10 +180,6 @@ public class SeckillServiceImpl  implements ISeckillService{
             logger.error(e.getMessage());
             return new SeckillExecution(seckillId, SeckillStateEnum.INNER_ERROR);
         }
-		
 	}
-
-
-
-	
 }
+

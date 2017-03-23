@@ -4,20 +4,21 @@
 package com.chen.seckill.enums;
 
 /**
- *<p>±êÌâ: SeckillStateEnum </p>
- *<p>ÃèÊö£º Ê¹ÓÃÃ¶¾Ù±íÊö³£Á¿Êý¾Ý×Öµä</p>
+ *<p>ï¿½ï¿½ï¿½ï¿½: SeckillStateEnum </p>
+ *<p>ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ Ê¹ï¿½ï¿½Ã¶ï¿½Ù±ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Öµï¿½</p>
  *<p>company:</p>
- * @×÷Õß  ³Â¼ÓÍû
- * @Ê±¼ä  2017Äê3ÔÂ15ÈÕ ÏÂÎç2:40:49
- *@°æ±¾ 
+ * @ï¿½ï¿½ï¿½ï¿½  ï¿½Â¼ï¿½ï¿½ï¿½
+ * @Ê±ï¿½ï¿½  2017ï¿½ï¿½3ï¿½ï¿½15ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½2:40:49
+ *@ï¿½æ±¾ 
  */
 public enum SeckillStateEnum {
 
-	SUCCESS(1, "ÃëÉ±³É¹¦"), 
-	END(0, "ÃëÉ±½áÊø"), 
-	REPEAT_KILL(-1, "ÖØ·¢ÃëÉ±"), 
-	INNER_ERROR(-2, "ÏµÍ³Òì³£"), 
-	DATA_REWRITE(-3, "Êý¾Ý´Û¸Ä");
+	  SUCCESS(1, "ç§’æ€æˆåŠŸ"),
+	    END(0, "ç§’æ€ç»“æŸ"),
+	    REPEAT_KILL(-1, "é‡å¤ç§’æ€"),
+	    INNER_ERROR(-2, "ç³»ç»Ÿå¼‚å¸¸"),
+	    DATA_REWRITE(-3, "æ•°æ®ç¯¡æ”¹"),
+	    NOT_LOGIN(-4, "æœªç™»é™†");
 
 	private int state;
 
